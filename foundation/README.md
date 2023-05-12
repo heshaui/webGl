@@ -19,7 +19,7 @@
             // 点的大小
             gl_PointSize = 50.0;
         }
-    ``
+    `
     // 片元着色器
     // gl_fragColor = vec4(r, g, b, a)
     const FRAGMENT_SHADER_SOURCE = `
@@ -30,22 +30,22 @@
     `
     ``
     2.创建着色器
-    ```
+    `
     const vertexShader = gl.createShader(gl.VERTEX_SHADER)
     const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER)
-    ```
+    `
     3.关联着色器
-    ```
+    `
     gl.shaderSource(vertexShader, VERTEX_SHADER_SOURCE)
     gl.shaderSource(fragmentShader, FRAGMENT_SHADER_SOURCE)
-    ```
+    `
     4.编译着色器
-    ```
+    `
     gl.compileShader(vertexShader)
     gl.compileShader(fragmentShader)
-    ```
+    `
     5.创建程序对象
-    ```
+    `
     const program = gl.createProgram()
 
     gl.attachShader(program, vertexShader)
@@ -53,14 +53,14 @@
 
     gl.linkProgram(program)
     gl.useProgram(program)
-    ```
+    `
     6.执行绘制
-    ```
+    `
     // 执行绘制 gl.drawArrays(绘制的图形是什么, 从哪开始, 使用几个顶点)
     gl.drawArrays(gl.POINTS, 0, 1)
     gl.drawArrays(gl.LINES, 0, 1)
     gl.drawArrays(gl.TRIANGLES) // 三角形triangles
-    ```
+    `
 ## webGl开源框架
     1. Three.js javaScript 3D webGl库
     2. Babylon.js web3D 图形引擎
