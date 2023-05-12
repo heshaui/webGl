@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>设置背景色</title>
+</head>
+<body>
+    <canvas id="mycanvas" width="500px" height="500px"></canvas>
+    <script>
+        // 获取canvas元素
+        const ctx = document.getElementById('mycanvas')
+        // 创建上下文
+        const gl = ctx.getContext('webgl')
+        // 设置背景色
+        gl.clearColor(1.0, 0.1, 0.1, 0.5)
+        // 清空绘图区 
+        // 清空颜色缓冲区
+        gl.clear(gl.COLOR_BUFFER_BIT)
+
+        // 设置深度
+        gl.clearDepth(1.0)
+        // 清空深度缓冲区
+        gl.clear(gl.DEPTH_BUFFER_BIT)
+
+        // 设置模版
+        gl.clearStencil(0)
+        // 清空模版缓冲区
+        gl.clear(gl.STENCIL_BUFFER_BIT)
+    </script>
+</body>
+</html>
