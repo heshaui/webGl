@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Three.js Garden</title>
+	<style>
+		body {
+			margin: 0;
+			padding: 0;
+			overflow: hidden;
+		}
+		#container {
+			width: 100%;
+			height: 100%;
+			position: absolute;
+			top: 0;
+			left: 0;
+			background-color: #000;
+		}
+	</style>
+</head>
+<body>
+	<div id="container"></div>
+
+	<script src="./libs/three.js"></script>
+	<script src="./libs/OrbitControls.js"></script>
+    <script src="./libs/TrackballControls.js"></script>
+	<script>
+        function initTrackballControls(camera, renderer) {
+            const trackballControls = new THREE.TrackballControls(camera, renderer.domElement)
+            trackballControls.rotateSpeed = 3.0
+            trackballControls.zoomSpeed = 1.0
+            trackballControls.panSpeed = 3.0
+            trackballControls.staticMoving = true
+            return trackballControls
+        }
+
+		var container = document.getElementById('container');
+		var scene = new THREE.Scene();
+		var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+		var renderer = new THREE.WebGLRenderer();
+		renderer.setSize(window.innerWidth, window.innerHeight);
+		container.appendChild(renderer.domElement);
+
+		var ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+		scene.add(ambientLight);
+
+		var directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+		directionalLight.position.set(0, 1, 1);
+		scene.add(directionalLight);
+
+		var floorGeometry = new THREE.PlaneGeometry(10, 10);
+		var floorMaterial = new THREE.MeshPhongMaterial({color: 0x808080});
+		var floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
+		floorMesh.rotation.x = -Math.PI / 2;
+		scene.add(floorMesh);
+
+		var wallGeometry = new THREE.BoxGeometry(1, 2, 0.2);
+		var wallMaterial = new THREE.MeshPhongMaterial({color: 0x808080});
+		var wallMesh1 = new THREE.Mesh(wallGeometry, wallMaterial);
+		var wallMesh2 = new THREE.Mesh(wallGeometry, wallMaterial);
+		var wallMesh3 = new THREE.Mesh(wallGeometry, wallMaterial);
+		var wallMesh4 = new THREE.Mesh(wallGeometry, wallMaterial);
+		wallMesh1.position.set(0, 1, -5);
+		wallMesh2.position.set(0, 1, 5);
+		wallMesh3.position.set(-5, 1, 0);
+		wallMesh3.rotation.y = Math.PI / 2;
+		wallMesh4.position.set(5, 1, 0);
+		wallMesh4.rotation.y = Math.PI / 2;
+		scene.add(wallMesh1);
+		scene.add(wallMesh2);
+		scene.add(wallMesh3);
+		scene.add(wallMesh4);
+
+		// 移动摄像机
+        const trackballControls = initTrackballControls(camera, renderer)
+        const clock = new THREE.Clock()
+		camera.position.set(0, 1.6, 0);
+		scene.add(camera);
+
+		function animate() {
+            // trackballControls.update(clock.getDelta())
+			requestAnimationFrame(animate);
+			renderer.render(scene, camera);
+		}
+		animate();
+	</script>
+</body>
+</html>

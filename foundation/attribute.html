@@ -17,15 +17,19 @@
         import initShader from './initShader.js'
         const ctx = document.getElementById('canvas')
         const gl = ctx.getContext('webgl')
+        console.log(gl)
 
         // 着色器源码
         // 顶点着色器
         // gl_position = vec4(x, y, z, w) w是齐次坐标
+        // attribute 类型 变量
+        // attribute 变量只能在顶点着色器使用，不能在片元着色器使用
         const VERTEX_SHADER_SOURCE = `
             // 必须存在的主函数
+            attribute vec4 aPosition;
             void main() {
                 // 点的坐标
-                gl_Position = vec4(0.0, 0.0, 0.0, 1.0);
+                gl_Position = aPosition;
                 // 点的大小
                 gl_PointSize = 20.0;
             }
@@ -39,11 +43,28 @@
             }
         `
         const program = initShader(gl, VERTEX_SHADER_SOURCE, FRAGMENT_SHADER_SOURCE)
+        const aPosition = gl.getAttribLocation(program, 'aPosition')
 
-        // 执行绘制 gl.drawArrays(绘制的图形是什么, 从哪开始, 使用几个顶点)
-        gl.drawArrays(gl.POINTS, 0, 1)
-        // gl.drawArrays(gl.LINES, 0, 1)
-        // gl.drawArrays(gl.TRIANGLES, 0, 1) // 三角形triangles
+        let x = 0
+        let fps = 5
+        let fpsInterval = 1000 / fps
+        let last = new Date().getTime()
+        function render() {
+            requestAnimationFrame(render)
+            let now = new Date().getTime()
+            let elapsed = now - last
+            if ( elapsed > fpsInterval ) {
+                last = now - (elapsed % fpsInterval)
+                if (x < 1.0) {
+                    x += 0.1
+                } else {
+                    x = 0
+                }
+                gl.vertexAttrib1f(aPosition, x)
+                gl.drawArrays(gl.POINTS, 0, 1)
+            }
+        }
+        render()
     </script>
 </body>
 </html>

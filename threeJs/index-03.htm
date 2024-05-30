@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="./libs/three.js"></script>
+    <script src="./libs/stats.js"></script>
+    <script src="./libs/dat.gui.js"></script>
+    <script src="./libs/TrackballControls.js"></script>
+    <script src="./utils.js"></script>
+    <title>自定义立方体</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div id="canvas"></div>
+    <div id="mystats"></div>
+    <script>
+        let camera
+        let renderer
+        function init() {
+            // 创建场景
+            const scene = new THREE.Scene()
+
+            // 创建摄像机
+            camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.1, 100)
+            camera.position.set(-45, 40, 30)
+            camera.lookAt(scene.position)
+
+            // 创建渲染器
+            renderer = new THREE.WebGLRenderer()
+            renderer.setClearColor('#fff')
+            renderer.setSize(window.innerWidth, window.innerHeight)
+            renderer.shadowMapEnabled = true
+            const canvas = document.getElementById('canvas')
+            canvas.appendChild(renderer.domElement)
+
+            // 创建平面对象
+            const planeGeometry = new THREE.PlaneGeometry(60, 30)
+            const planeMaterial = new THREE.MeshLambertMaterial('#fff')
+            const plane = new THREE.Mesh(planeGeometry, planeMaterial)
+            plane.rotation.x = -0.5 * Math.PI
+            plane.position.set(0, 0, 0)
+            plane.receiveShadow = true
+            scene.add(plane)
+
+            // 创建环境光
+            const ambientLight = new THREE.AmbientLight(0x0c0c0c)
+            scene.add(ambientLight)
+            // 创建聚光灯源
+            const spotLight = new THREE.SpotLight(0xffffff)
+            spotLight.position.set(-40, 60, -10)
+            spotLight.castShadow = true
+            scene.add(spotLight)
+
+            // 创建点
+            function setVer() {
+                
+            }
+
+            // 控制器
+            const controls = new function() {
+
+            }
+            const gui = new dat.GUI()
+
+            // 辅助帧
+            const stats = initStats()
+            // 转向、缩小
+            const trackballControls = initTrackballControls(camera, renderer)
+            const clock = new THREE.Clock()
+            // 执行
+            function render() {
+                stats.update()
+                trackballControls.update(clock.getDelta())
+                requestAnimationFrame(render)
+                renderer.render(scene, camera)
+            }
+            render()
+
+        }
+        window.onload = init
+        function onResize() {
+            camera.aspect = window.innerWidth / window.innerHeight
+            camera.updateProjectionMatrix()
+            renderer.setSize(window.innerWidth, window.innerHeight)
+        }
+        window.addEventListener('resize', onResize)
+    </script>
+</body>
+</html>

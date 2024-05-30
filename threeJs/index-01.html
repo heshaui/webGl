@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="./libs/three.js"></script>
+    <script src="./libs/stats.js"></script>
+    <script src="./libs/dat.gui.js"></script>
+    <script src="./libs/TrackballControls.js"></script>
+    <script src="./utils.js"></script>
+    <title>块球</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div id="canvas"></div>
+    <div id="mystats"></div>
+    <script>
+        let camera
+        let renderer
+        function init() {
+            const stats = initStats()
+            // 第一步定义场景
+            const scene = new THREE.Scene()
+
+            // 第二步定义摄像机
+            camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.1, 1000)
+            camera.position.set(-45, 40, 30)
+            camera.lookAt(scene.position)
+
+            // 第三部定义渲染器
+            renderer = new THREE.WebGLRenderer()
+            // 颜色为白色
+            renderer.setClearColor(new THREE.Color('#eee'))
+            // 渲染的大小为整个屏幕
+            renderer.setSize(window.innerWidth, window.innerHeight)
+            renderer.shadowMapEnabled = true
+
+            // 创建坐标轴
+            // const axes = new THREE.AxisHelper(20)
+            // scene.add(axes)
+
+            // 创建平面
+            const planeGeometry = new THREE.PlaneGeometry(10, 10)
+            const planeMaterial = new THREE.MeshLambertMaterial({color: '#fff'}) 
+            const plane = new THREE.Mesh(planeGeometry, planeMaterial)
+            plane.rotation.x = -0.5 * Math.PI
+            plane.position.set(15, 0, 0)
+            plane.receiveShadow = true
+            scene.add(plane)
+
+            // 创建正方体
+            const boxGeometry =  new THREE.BoxGeometry(4, 4, 4)
+            const boxMaterial = new THREE.MeshLambertMaterial({
+                color: 'red'
+            })
+            const box = new THREE.Mesh(boxGeometry, boxMaterial)
+            box.position.set(-4, 3, 0)
+            box.castShadow = true
+            scene.add(box)
+
+            // 创建球体
+            const ballGemometry = new THREE.SphereGeometry( 4, 20, 20 );
+            const ballMaterial = new THREE.MeshLambertMaterial({
+                color: '#67C23A'
+            })
+            const ball = new THREE.Mesh(ballGemometry, ballMaterial)
+            ball.castShadow = true
+            ball.position.set(20, 4, 2)
+            scene.add(ball)
+
+            // 添加光源
+            const spotLight = new THREE.SpotLight('#fff')
+            spotLight.position.set(-40, 40, -15)
+            spotLight.castShadow = true
+            // spotLight.shadow.mapSize = new THREE.Vector2(1024, 1024)
+            // spotLight.shadow.camera.far = 130
+            // spotLight.shadow.camera.near = 40
+            scene.add(spotLight)
+
+            // 添加元素
+            const canvas = document.getElementById('canvas')
+            canvas.appendChild(renderer.domElement)
+
+            // 控制器
+            const controls = new function() {
+                this.rotationSpeed = 0.02
+                this.bouncingSpeed = 0.03
+            }
+            const gui = new dat.GUI()
+            gui.add(controls, 'rotationSpeed', 0, 0.5)
+            gui.add(controls, 'bouncingSpeed', 0, 0.5)
+
+            // 移动摄像机
+            const trackballControls = initTrackballControls(camera, renderer)
+            const clock = new THREE.Clock()
+
+
+            // 添加动画
+            let step = 0
+            function renderScene() {
+                stats.update()
+                trackballControls.update(clock.getDelta())
+                // 旋转盒子
+                box.rotation.x += controls.rotationSpeed
+                box.rotation.y += controls.rotationSpeed
+                box.rotation.z += controls.rotationSpeed
+
+                // 弹跳球
+                step += controls.bouncingSpeed
+                ball.position.x = 20 + 10*(Math.cos(step))
+                ball.position.y = 2 + 10*Math.abs(Math.sin(step))
+                requestAnimationFrame(renderScene)
+                renderer.render(scene, camera)
+            }
+            renderScene()
+        }
+        function onResize() {
+            camera.aspect = window.innerWidth / window.innerHeight
+            camera.updateProjectionMatrix()
+            renderer.setSize(window.innerWidth, window.innerHeight)
+        }
+        window.onload = init
+        window.addEventListener('resize', onResize)
+
+    </script>
+</body>
+</html>
